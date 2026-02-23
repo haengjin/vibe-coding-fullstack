@@ -12,6 +12,10 @@ public class PostRepository {
         return new ArrayList<>(posts);
     }
 
+    public java.util.Optional<Post> findByNo(Long no) {
+        return posts.stream().filter(p -> p.getNo().equals(no)).findFirst();
+    }
+
     public void save(Post post) {
         posts.add(post);
     }

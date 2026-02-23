@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>바이브코딩 | 게시글 목록</title>
+    <title>바이브코딩 | 게시글 상세</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
         rel="stylesheet" />
@@ -80,44 +80,56 @@
     </nav>
 
     <main class="pt-32 pb-20 min-h-screen hero-gradient">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="mb-12">
-                <h1 class="text-4xl font-black mb-4">자유 게시판</h1>
-                <p class="text-slate-400">바이브코딩의 최신 소식과 지식을 나누는 공간입니다.</p>
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="mb-8 flex items-center justify-between">
+                <a href="/posts"
+                    class="flex items-center gap-2 text-slate-400 hover:text-primary transition-colors font-medium">
+                    <span class="material-symbols-outlined text-sm">arrow_back</span>
+                    목록으로 돌아가기
+                </a>
+                <div class="flex items-center gap-4 text-sm text-slate-500 font-mono">
+                    <span>No. <span th:text="${post.no}">1</span></span>
+                    <span>•</span>
+                    <span class="flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm text-slate-600">visibility</span>
+                        <span th:text="${post.views}">0</span>
+                    </span>
+                </div>
             </div>
 
-            <!-- Posts List Table -->
-            <div class="bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-white/10 bg-white/5">
-                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider w-20">No</th>
-                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider">Title</th>
-                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider w-40">Date</th>
-                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider w-24">Views
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-white/5">
-                        <tr th:each="post : ${posts}" class="hover:bg-white/5 transition-colors group">
-                            <td class="px-6 py-4 text-sm text-slate-400 font-mono" th:text="${post.no}">1</td>
-                            <td class="px-6 py-4">
-                                <a th:href="@{/posts/{no}(no=${post.no})}"
-                                    class="text-slate-200 font-semibold group-hover:text-primary transition-colors"
-                                    th:text="${post.title}">게시글 제목 예시</a>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-slate-500"
-                                th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}">2024-02-23</td>
-                            <td class="px-6 py-4 text-sm text-slate-500" th:text="${post.views}">0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <article class="bg-zinc-900/50 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-sm">
+                <header class="mb-10 border-b border-white/5 pb-10">
+                    <h1 class="text-3xl md:text-4xl font-black mb-6 leading-tight dark:text-white"
+                        th:text="${post.title}">게시글 제목입니다.</h1>
+                    <div class="flex flex-wrap gap-6 text-sm">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-slate-500 text-xs font-bold uppercase tracking-widest">Created At</span>
+                            <span class="text-slate-300 font-medium font-mono"
+                                th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2024-02-23
+                                12:00:00</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <span class="text-slate-500 text-xs font-bold uppercase tracking-widest">Updated At</span>
+                            <span class="text-slate-300 font-medium font-mono"
+                                th:text="${#temporals.format(post.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2024-02-23
+                                12:00:00</span>
+                        </div>
+                    </div>
+                </header>
 
-            <div class="mt-8 flex justify-end">
-                <button
-                    class="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all">글쓰기</button>
-            </div>
+                <div class="prose prose-invert max-w-none mb-12">
+                    <p class="text-slate-300 leading-relaxed whitespace-pre-wrap" th:text="${post.content}">게시글 내용이 여기에
+                        표시됩니다.</p>
+                </div>
+
+                <div class="flex justify-center pt-8 border-t border-white/5">
+                    <a href="/posts"
+                        class="px-10 py-4 bg-zinc-800 text-white font-bold rounded-2xl hover:bg-zinc-700 transition-all transform active:scale-95 flex items-center gap-2">
+                        <span class="material-symbols-outlined">list</span>
+                        목록 보기
+                    </a>
+                </div>
+            </article>
         </div>
     </main>
 
