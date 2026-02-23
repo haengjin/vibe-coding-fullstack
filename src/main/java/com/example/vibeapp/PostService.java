@@ -3,7 +3,9 @@ package com.example.vibeapp;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -30,7 +32,9 @@ public class PostService {
     }
 
     public List<Post> getAllPosts() {
-        return postRepository.findAll();
+        return postRepository.findAll().stream()
+                .sorted(Comparator.comparing(Post::getNo).reversed())
+                .collect(Collectors.toList());
     }
 
     public Post getPostByNo(Long no) {
