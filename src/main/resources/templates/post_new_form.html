@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>바이브코딩 | 게시글 목록</title>
+    <title>바이브코딩 | 새 게시글 작성</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
         rel="stylesheet" />
@@ -80,43 +80,37 @@
     </nav>
 
     <main class="pt-32 pb-20 min-h-screen hero-gradient">
-        <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-3xl mx-auto px-6">
             <div class="mb-12">
-                <h1 class="text-4xl font-black mb-4">자유 게시판</h1>
-                <p class="text-slate-400">바이브코딩의 최신 소식과 지식을 나누는 공간입니다.</p>
+                <h1 class="text-4xl font-black mb-4">새 게시글 작성</h1>
+                <p class="text-slate-400">새로운 소식이나 궁금한 점을 공유해보세요.</p>
             </div>
 
-            <!-- Posts List Table -->
-            <div class="bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-white/10 bg-white/5">
-                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider w-20">No</th>
-                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider">Title</th>
-                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider w-40">Date</th>
-                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider w-24">Views
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-white/5">
-                        <tr th:each="post : ${posts}" class="hover:bg-white/5 transition-colors group">
-                            <td class="px-6 py-4 text-sm text-slate-400 font-mono" th:text="${post.no}">1</td>
-                            <td class="px-6 py-4">
-                                <a th:href="@{/posts/{no}(no=${post.no})}"
-                                    class="text-slate-200 font-semibold group-hover:text-primary transition-colors"
-                                    th:text="${post.title}">게시글 제목 예시</a>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-slate-500"
-                                th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}">2024-02-23</td>
-                            <td class="px-6 py-4 text-sm text-slate-500" th:text="${post.views}">0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <div class="bg-zinc-900/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
+                <form onsubmit="alert('새 게시글 등록'); return false;" class="space-y-6">
+                    <div>
+                        <label for="title" class="block text-sm font-bold text-slate-300 mb-2">제목 <span
+                                class="text-primary">*</span></label>
+                        <input type="text" id="title" name="title" required
+                            class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-primary/50 transition-colors"
+                            placeholder="제목을 입력하세요">
+                    </div>
 
-            <div class="mt-8 flex justify-end">
-                <a th:href="@{/posts/new}"
-                    class="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all">글쓰기</a>
+                    <div>
+                        <label for="content" class="block text-sm font-bold text-slate-300 mb-2">내용 <span
+                                class="text-primary">*</span></label>
+                        <textarea id="content" name="content" rows="10" required
+                            class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-primary/50 transition-colors resize-none"
+                            placeholder="내용을 입력하세요"></textarea>
+                    </div>
+
+                    <div class="flex justify-end gap-4 pt-4">
+                        <a th:href="@{/posts}"
+                            class="px-8 py-3 bg-zinc-800 text-slate-300 font-bold rounded-xl hover:bg-zinc-700 transition-all text-center">취소</a>
+                        <button type="submit"
+                            class="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all">등록</button>
+                    </div>
+                </form>
             </div>
         </div>
     </main>

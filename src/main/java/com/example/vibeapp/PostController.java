@@ -21,6 +21,11 @@ public class PostController {
         return "posts";
     }
 
+    @GetMapping("/posts/new")
+    public String newPostForm() {
+        return "post_new_form";
+    }
+
     @GetMapping("/posts/{no}")
     public String getPostDetail(@PathVariable("no") Long no, Model model) {
         Post post = postService.getPostByNo(no);
