@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
@@ -34,5 +36,11 @@ public class PostController {
         }
         model.addAttribute("post", post);
         return "post_detail";
+    }
+
+    @PostMapping("/posts/add")
+    public String addPost(@RequestParam("title") String title, @RequestParam("content") String content) {
+        postService.addPost(title, content);
+        return "redirect:/posts";
     }
 }

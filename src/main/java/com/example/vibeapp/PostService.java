@@ -9,6 +9,8 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
 
+    private long nextNo = 11; // 초기 데이터 10개 이후부터 시작
+
     public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
@@ -37,5 +39,16 @@ public class PostService {
             post.setViews(post.getViews() + 1);
         }
         return post;
+    }
+
+    public void addPost(String title, String content) {
+        Post post = new Post();
+        post.setNo(nextNo++);
+        post.setTitle(title);
+        post.setContent(content);
+        post.setCreatedAt(LocalDateTime.now());
+        post.setUpdatedAt(null);
+        post.setViews(0);
+        postRepository.save(post);
     }
 }
