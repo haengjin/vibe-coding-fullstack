@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html class="dark" lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>바이브코딩 | 게시글 목록</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8c25f4",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#0a0a0a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-nav {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, rgba(140, 37, 244, 0.1) 0%, rgba(10, 10, 10, 1) 100%);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 selection:bg-primary selection:text-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-primary/10">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <a href="/" class="flex items-center gap-2">
+                    <div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined font-bold text-2xl">terminal</span>
+                    </div>
+                    <h2 class="text-xl font-black tracking-tight dark:text-white">VIBE <span
+                            class="text-primary">CODING</span></h2>
+                </a>
+            </div>
+            <div class="hidden md:flex items-center gap-10">
+                <a class="text-sm font-medium hover:text-primary transition-colors" href="/">Home</a>
+                <a class="text-sm font-medium text-primary transition-colors" href="/posts">Posts</a>
+                <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Courses</a>
+                <a class="text-sm font-medium hover:text-primary transition-colors" href="#">About</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <button
+                    class="px-6 py-2.5 bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded-lg transition-all transform active:scale-95">지금
+                    시작하기</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-20 min-h-screen hero-gradient">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-12">
+                <h1 class="text-4xl font-black mb-4">자유 게시판</h1>
+                <p class="text-slate-400">바이브코딩의 최신 소식과 지식을 나누는 공간입니다.</p>
+            </div>
+
+            <!-- Posts List Table -->
+            <div class="bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-white/10 bg-white/5">
+                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider w-20">No</th>
+                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider">Title</th>
+                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider w-40">Date</th>
+                            <th class="px-6 py-4 text-sm font-bold text-primary uppercase tracking-wider w-24">Views
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        <tr th:each="post : ${posts}" class="hover:bg-white/5 transition-colors group">
+                            <td class="px-6 py-4 text-sm text-slate-400 font-mono" th:text="${post.no}">1</td>
+                            <td class="px-6 py-4">
+                                <a href="#"
+                                    class="text-slate-200 font-semibold group-hover:text-primary transition-colors"
+                                    th:text="${post.title}">게시글 제목 예시</a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-slate-500"
+                                th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}">2024-02-23</td>
+                            <td class="px-6 py-4 text-sm text-slate-500" th:text="${post.views}">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 flex justify-end">
+                <button
+                    class="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all">글쓰기</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-zinc-950 border-t border-white/5 py-10">
+        <div class="max-w-7xl mx-auto px-6 text-center text-slate-600 text-sm">
+            <p>© 2024 Vibe Coding. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
