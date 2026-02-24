@@ -1,20 +1,42 @@
 package com.example.vibeapp.post;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "POSTS")
 public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "NO")
     private Long no;
+
+    @Column(name = "TITLE", nullable = false, length = 200)
     private String title;
+
+    @Lob
+    @Column(name = "CONTENT", nullable = false)
     private String content;
+
+    @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    @Column(name = "VIEWS", nullable = false)
     private Integer views;
 
     public Post() {
     }
 
-    public Post(Long no, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt,
-            Integer views) {
+    public Post(Long no, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt, Integer views) {
         this.no = no;
         this.title = title;
         this.content = content;
@@ -23,7 +45,6 @@ public class Post {
         this.views = views;
     }
 
-    // Getters and Setters
     public Long getNo() {
         return no;
     }

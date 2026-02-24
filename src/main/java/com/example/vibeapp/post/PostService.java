@@ -35,13 +35,13 @@ public class PostService {
     }
 
     public PostResponseDto findById(Long id) {
-        Post post = postRepository.findById(id);
+        Post post = postRepository.findById(id).orElse(null);
         if (post == null) {
             return null;
         }
 
         postRepository.increaseViews(id);
-        Post refreshed = postRepository.findById(id);
+        Post refreshed = postRepository.findById(id).orElse(null);
         String tags = joinTags(postTagRepository.findByPostNo(id));
         return PostResponseDto.from(refreshed, tags);
     }
@@ -59,10 +59,8 @@ public class PostService {
 
     @Transactional
     public void update(Long id, PostUpdateDto updateDto) {
-        Post post = postRepository.findById(id);
-        if (post == null) {
-            return;
-        }
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다. id=" + id));
 
         post.setTitle(updateDto.title());
         post.setContent(updateDto.content());
@@ -73,6 +71,7 @@ public class PostService {
         saveTags(id, updateDto.tags());
     }
 
+    @Transactional
     public void delete(Long id) {
         postTagRepository.deleteTagsByPostNo(id);
         postRepository.deleteById(id);
