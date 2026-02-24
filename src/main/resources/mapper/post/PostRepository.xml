@@ -17,41 +17,41 @@
 
     <select id="findAll" resultMap="postResultMap">
         SELECT <include refid="baseColumns"/>
-        FROM posts
+        FROM POSTS
         ORDER BY no DESC
     </select>
 
     <select id="findPaged" resultMap="postResultMap">
         SELECT <include refid="baseColumns"/>
-        FROM posts
+        FROM POSTS
         ORDER BY no DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
 
     <select id="countAll" resultType="long">
         SELECT COUNT(*)
-        FROM posts
+        FROM POSTS
     </select>
 
     <select id="findById" parameterType="long" resultMap="postResultMap">
         SELECT <include refid="baseColumns"/>
-        FROM posts
+        FROM POSTS
         WHERE no = #{id}
     </select>
 
     <update id="increaseViews" parameterType="long">
-        UPDATE posts
+        UPDATE POSTS
         SET views = views + 1
         WHERE no = #{id}
     </update>
 
     <insert id="save" parameterType="com.example.vibeapp.post.Post" useGeneratedKeys="true" keyProperty="no">
-        INSERT INTO posts (title, content, created_at, updated_at, views)
+        INSERT INTO POSTS (title, content, created_at, updated_at, views)
         VALUES (#{title}, #{content}, #{createdAt}, #{updatedAt}, #{views})
     </insert>
 
     <update id="update" parameterType="com.example.vibeapp.post.Post">
-        UPDATE posts
+        UPDATE POSTS
         SET title = #{title},
             content = #{content},
             updated_at = #{updatedAt}
@@ -59,7 +59,7 @@
     </update>
 
     <delete id="deleteById" parameterType="long">
-        DELETE FROM posts
+        DELETE FROM POSTS
         WHERE no = #{id}
     </delete>
 </mapper>
