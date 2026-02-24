@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html class="dark" lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>바이브코딩 | 게시글 수정</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8c25f4",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#0a0a0a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-nav {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, rgba(140, 37, 244, 0.1) 0%, rgba(10, 10, 10, 1) 100%);
+        }
+
+        input:read-only,
+        textarea:read-only {
+            background-color: rgba(255, 255, 255, 0.05);
+            cursor: not-allowed;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 selection:bg-primary selection:text-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-primary/10">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <a href="/" class="flex items-center gap-2">
+                    <div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined font-bold text-2xl">terminal</span>
+                    </div>
+                    <h2 class="text-xl font-black tracking-tight dark:text-white">VIBE <span
+                            class="text-primary">CODING</span></h2>
+                </a>
+            </div>
+            <div class="flex items-center gap-4 text-sm font-medium">
+                <span class="text-slate-400">게시글 관리</span>
+                <span class="text-slate-600">/</span>
+                <span class="text-primary">수정하기</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-20 min-h-screen hero-gradient">
+        <div class="max-w-3xl mx-auto px-6">
+            <header class="mb-10">
+                <h1 class="text-3xl font-black mb-2 dark:text-white">게시글 수정</h1>
+                <p class="text-slate-400">기존 게시글의 제목과 내용을 수정할 수 있습니다.</p>
+            </header>
+
+            <form id="editForm"
+                class="space-y-8 bg-zinc-900/50 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-sm">
+                <!-- 읽기 전용 필드 그룹 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-8 border-b border-white/5">
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase tracking-widest text-slate-500">글 번호</label>
+                        <input type="text" th:value="${post.no}" readonly
+                            class="w-full bg-zinc-800/50 border-white/10 rounded-xl px-4 py-3 text-sm font-mono" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase tracking-widest text-slate-500">조회수</label>
+                        <input type="text" th:value="${post.views}" readonly
+                            class="w-full bg-zinc-800/50 border-white/10 rounded-xl px-4 py-3 text-sm font-mono" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase tracking-widest text-slate-500">생성일</label>
+                        <input type="text" th:value="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}" readonly
+                            class="w-full bg-zinc-800/50 border-white/10 rounded-xl px-4 py-3 text-sm font-mono" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase tracking-widest text-slate-500">수정일</label>
+                        <input type="text"
+                            th:value="${post.updatedAt != null ? #temporals.format(post.updatedAt, 'yyyy-MM-dd') : ''}"
+                            readonly
+                            class="w-full bg-zinc-800/50 border-white/10 rounded-xl px-4 py-3 text-sm font-mono" />
+                    </div>
+                </div>
+
+                <!-- 수정 가능 필드 -->
+                <div class="space-y-6 pt-4">
+                    <div class="space-y-2">
+                        <label for="title" class="text-sm font-bold text-slate-300">제목</label>
+                        <input type="text" id="title" th:value="${post.title}" required
+                            class="w-full bg-zinc-800 border-white/10 focus:border-primary focus:ring-primary rounded-xl px-4 py-4 text-white transition-all" />
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="content" class="text-sm font-bold text-slate-300">내용</label>
+                        <textarea id="content" rows="10" required
+                            class="w-full bg-zinc-800 border-white/10 focus:border-primary focus:ring-primary rounded-2xl px-4 py-4 text-white transition-all whitespace-pre-wrap"
+                            th:text="${post.content}"></textarea>
+                    </div>
+                </div>
+
+                <!-- 버튼 그룹 -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <button type="button" onclick="alert('저장되었습니다 (테스트)')"
+                        class="flex-1 py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-2xl transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">save</span>
+                        저장하기
+                    </button>
+                    <a th:href="@{|/posts/${post.no}|}"
+                        class="flex-1 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-2xl transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">close</span>
+                        취소
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="bg-zinc-950 border-t border-white/5 py-10">
+        <div class="max-w-7xl mx-auto px-6 text-center text-slate-600 text-sm">
+            <p>© 2024 Vibe Coding. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
