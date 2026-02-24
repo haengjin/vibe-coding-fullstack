@@ -7,3 +7,11 @@ out/
 *.log
 *.tmp
 build_log*.txt
+
+# H2 데이터베이스 파일
+/data/
+*.mv.db
+*.trace.db
+
+# 로그 파일
+/logs/

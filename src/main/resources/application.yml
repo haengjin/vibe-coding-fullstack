@@ -1,3 +1,38 @@
 spring:
   application:
     name: vibeapp
+
+  # H2 데이터베이스 설정 (파일 모드)
+  datasource:
+    url: jdbc:h2:file:./data/testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  # H2 Console 설정
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # SQL 초기화 설정
+  sql:
+    init:
+      mode: always
+
+# MyBatis 설정
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.example.vibeapp.post
+  configuration:
+    map-underscore-to-camel-case: true
+
+# 디버깅 모드 활성화
+debug: true
+
+# 로깅 설정
+logging:
+  level:
+    org.springframework.boot.autoconfigure: DEBUG
+  file:
+    name: ./logs/app.log
