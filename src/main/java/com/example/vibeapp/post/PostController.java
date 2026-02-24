@@ -1,8 +1,14 @@
 package com.example.vibeapp.post;
 
+import com.example.vibeapp.post.dto.PostCreateDto;
+import com.example.vibeapp.post.dto.PostListDto;
+import com.example.vibeapp.post.dto.PostResponseDto;
+import com.example.vibeapp.post.dto.PostUpdateDto;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +25,7 @@ public class PostController {
     @GetMapping("/posts")
     public String listPosts(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
         int pageSize = 5;
-        List<Post> posts = postService.findPagedPosts(page, pageSize);
+        List<PostListDto> posts = postService.findPagedPosts(page, pageSize);
         int totalPages = postService.getTotalPages(pageSize);
 
         model.addAttribute("posts", posts);
@@ -35,7 +41,7 @@ public class PostController {
 
     @GetMapping("/posts/{no}")
     public String getPostDetail(@PathVariable("no") Long no, Model model) {
-        Post post = postService.findById(no);
+        PostResponseDto post = postService.findById(no);
         if (post == null) {
             return "redirect:/posts";
         }
@@ -45,7 +51,7 @@ public class PostController {
 
     @GetMapping("/posts/{no}/edit")
     public String editPostForm(@PathVariable("no") Long no, Model model) {
-        Post post = postService.findById(no);
+        PostResponseDto post = postService.findById(no);
         if (post == null) {
             return "redirect:/posts";
         }
@@ -54,15 +60,14 @@ public class PostController {
     }
 
     @PostMapping("/posts/add")
-    public String addPost(@RequestParam("title") String title, @RequestParam("content") String content) {
-        postService.create(title, content);
+    public String addPost(@Valid @ModelAttribute PostCreateDto createDto) {
+        postService.create(createDto);
         return "redirect:/posts";
     }
 
     @PostMapping("/posts/{no}/save")
-    public String savePost(@PathVariable("no") Long no, @RequestParam("title") String title,
-            @RequestParam("content") String content) {
-        postService.update(no, title, content);
+    public String savePost(@PathVariable("no") Long no, @Valid @ModelAttribute PostUpdateDto updateDto) {
+        postService.update(no, updateDto);
         return "redirect:/posts/" + no;
     }
 

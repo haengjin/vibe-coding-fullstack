@@ -1,5 +1,9 @@
 package com.example.vibeapp.post;
 
+import com.example.vibeapp.post.dto.PostCreateDto;
+import com.example.vibeapp.post.dto.PostListDto;
+import com.example.vibeapp.post.dto.PostResponseDto;
+import com.example.vibeapp.post.dto.PostUpdateDto;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -37,7 +41,7 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public List<Post> findPagedPosts(int page, int size) {
+    public List<PostListDto> findPagedPosts(int page, int size) {
         List<Post> allPosts = findAll();
         int start = (page - 1) * size;
         int end = Math.min(start + size, allPosts.size());
@@ -45,7 +49,9 @@ public class PostService {
         if (start > allPosts.size()) {
             return List.of();
         }
-        return allPosts.subList(start, end);
+        return allPosts.subList(start, end).stream()
+                .map(PostListDto::from)
+                .collect(Collectors.toList());
     }
 
     public int getTotalPages(int size) {
@@ -53,30 +59,28 @@ public class PostService {
         return (int) Math.ceil((double) totalPosts / size);
     }
 
-    public Post findById(Long id) {
+    public PostResponseDto findById(Long id) {
         Post post = postRepository.findById(id).orElse(null);
         if (post != null) {
             post.setViews(post.getViews() + 1);
         }
-        return post;
+        return PostResponseDto.from(post);
     }
 
-    public void create(String title, String content) {
-        Post post = new Post();
+    public void create(PostCreateDto createDto) {
+        Post post = createDto.toEntity();
         post.setNo(nextNo++);
-        post.setTitle(title);
-        post.setContent(content);
         post.setCreatedAt(LocalDateTime.now());
         post.setUpdatedAt(null);
         post.setViews(0);
         postRepository.save(post);
     }
 
-    public void update(Long id, String title, String content) {
+    public void update(Long id, PostUpdateDto updateDto) {
         Post post = postRepository.findById(id).orElse(null);
         if (post != null) {
-            post.setTitle(title);
-            post.setContent(content);
+            post.setTitle(updateDto.getTitle());
+            post.setContent(updateDto.getContent());
             post.setUpdatedAt(LocalDateTime.now());
         }
     }
