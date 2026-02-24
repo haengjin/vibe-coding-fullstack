@@ -1,4 +1,4 @@
-package com.example.vibeapp;
+package com.example.vibeapp.post;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
