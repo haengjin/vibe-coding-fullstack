@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>바이브코딩 | 새 게시글 작성</title>
+    <title>VIBE CODING | 게시글 작성</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
         rel="stylesheet" />
@@ -53,7 +53,6 @@
 
 <body
     class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 selection:bg-primary selection:text-white">
-    <!-- Navigation -->
     <nav class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-primary/10">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -81,44 +80,47 @@
 
     <main class="pt-32 pb-20 min-h-screen hero-gradient">
         <div class="max-w-3xl mx-auto px-6">
-            <div class="mb-12">
-                <h1 class="text-4xl font-black mb-4">새 게시글 작성</h1>
-                <p class="text-slate-400">새로운 소식이나 궁금한 점을 공유해보세요.</p>
+            <div class="mb-10">
+                <h1 class="text-4xl font-black mb-3">게시글 작성</h1>
+                <p class="text-slate-400">제목, 내용, 태그를 입력하고 등록하세요.</p>
             </div>
 
-            <div class="bg-zinc-900/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
-                <form th:action="@{/posts/add}" method="POST" class="space-y-6">
-                    <div>
-                        <label for="title" class="block text-sm font-bold text-slate-300 mb-2">제목 <span
-                                class="text-primary">*</span></label>
-                        <input type="text" id="title" name="title" required
-                            class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-primary/50 transition-colors"
-                            placeholder="제목을 입력하세요">
-                    </div>
+            <form th:action="@{/posts/add}" method="POST"
+                class="space-y-6 bg-zinc-900/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
+                <div>
+                    <label for="title" class="block text-sm font-bold text-slate-300 mb-2">제목</label>
+                    <input type="text" id="title" name="title" required
+                        class="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/60"
+                        placeholder="제목을 입력하세요" />
+                </div>
 
-                    <div>
-                        <label for="content" class="block text-sm font-bold text-slate-300 mb-2">내용 <span
-                                class="text-primary">*</span></label>
-                        <textarea id="content" name="content" rows="10" required
-                            class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-primary/50 transition-colors resize-none"
-                            placeholder="내용을 입력하세요"></textarea>
-                    </div>
+                <div>
+                    <label for="content" class="block text-sm font-bold text-slate-300 mb-2">내용</label>
+                    <textarea id="content" name="content" rows="10" required
+                        class="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/60"
+                        placeholder="내용을 입력하세요"></textarea>
+                </div>
 
-                    <div class="flex justify-end gap-4 pt-4">
-                        <a th:href="@{/posts}"
-                            class="px-8 py-3 bg-zinc-800 text-slate-300 font-bold rounded-xl hover:bg-zinc-700 transition-all text-center">취소</a>
-                        <button type="submit"
-                            class="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all">등록</button>
-                    </div>
-                </form>
-            </div>
+                <div>
+                    <label for="tags" class="block text-sm font-bold text-slate-300 mb-2">태그</label>
+                    <input type="text" id="tags" name="tags"
+                        class="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/60"
+                        placeholder="예: spring, mybatis, h2" />
+                </div>
+
+                <div class="flex gap-3">
+                    <a th:href="@{/posts}"
+                        class="flex-1 text-center px-6 py-3 bg-zinc-700 hover:bg-zinc-600 rounded-xl font-bold">취소</a>
+                    <button type="submit"
+                        class="flex-1 px-6 py-3 bg-primary hover:bg-primary/90 rounded-xl text-white font-bold">등록</button>
+                </div>
+            </form>
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-zinc-950 border-t border-white/5 py-10">
         <div class="max-w-7xl mx-auto px-6 text-center text-slate-600 text-sm">
-            <p>© 2024 Vibe Coding. All rights reserved.</p>
+            <p>ⓒ 2024 Vibe Coding. All rights reserved.</p>
         </div>
     </footer>
 </body>
