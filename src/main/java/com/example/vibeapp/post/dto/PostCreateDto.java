@@ -14,7 +14,7 @@ public record PostCreateDto(
     public Post toEntity() {
         Post post = new Post();
         post.setTitle(this.title);
-        post.setContent(this.content);
+        post.setContent(this.content == null ? "" : this.content);
         return post;
     }
 }

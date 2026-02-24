@@ -5,16 +5,21 @@ import com.example.vibeapp.post.dto.PostListDto;
 import com.example.vibeapp.post.dto.PostResponseDto;
 import com.example.vibeapp.post.dto.PostUpdateDto;
 import jakarta.validation.Valid;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import java.net.URI;
+import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.List;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequestMapping("/api/posts")
 public class PostController {
     private final PostService postService;
 
@@ -22,58 +27,50 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("/posts")
-    public String listPosts(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
-        int pageSize = 5;
-        List<PostListDto> posts = postService.findPagedPosts(page, pageSize);
-        int totalPages = postService.getTotalPages(pageSize);
-
-        model.addAttribute("posts", posts);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
-        return "post/posts";
+    @GetMapping
+    public ResponseEntity<PostPageResponse> listPosts(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size) {
+        List<PostListDto> posts = postService.findPagedPosts(page, size);
+        int totalPages = postService.getTotalPages(size);
+        return ResponseEntity.ok(new PostPageResponse(posts, page, size, totalPages));
     }
 
-    @GetMapping("/posts/new")
-    public String newPostForm() {
-        return "post/post_new_form";
-    }
-
-    @GetMapping("/posts/{no}")
-    public String getPostDetail(@PathVariable("no") Long no, Model model) {
+    @GetMapping("/{no}")
+    public ResponseEntity<PostResponseDto> getPostDetail(@PathVariable("no") Long no) {
         PostResponseDto post = postService.findById(no);
         if (post == null) {
-            return "redirect:/posts";
+            throw new IllegalArgumentException("존재하지 않는 게시글입니다. id=" + no);
         }
-        model.addAttribute("post", post);
-        return "post/post_detail";
+        return ResponseEntity.ok(post);
     }
 
-    @GetMapping("/posts/{no}/edit")
-    public String editPostForm(@PathVariable("no") Long no, Model model) {
-        PostResponseDto post = postService.findById(no);
-        if (post == null) {
-            return "redirect:/posts";
-        }
-        model.addAttribute("post", post);
-        return "post/post_edit_form";
+    @PostMapping
+    public ResponseEntity<PostResponseDto> addPost(@Valid @RequestBody PostCreateDto createDto) {
+        Long newId = postService.create(createDto);
+        PostResponseDto created = postService.findByIdWithoutIncrease(newId);
+        return ResponseEntity.created(URI.create("/api/posts/" + newId)).body(created);
     }
 
-    @PostMapping("/posts/add")
-    public String addPost(@Valid @ModelAttribute PostCreateDto createDto) {
-        postService.create(createDto);
-        return "redirect:/posts";
-    }
-
-    @PostMapping("/posts/{no}/save")
-    public String savePost(@PathVariable("no") Long no, @Valid @ModelAttribute PostUpdateDto updateDto) {
+    @PatchMapping("/{no}")
+    public ResponseEntity<PostResponseDto> savePost(
+            @PathVariable("no") Long no,
+            @Valid @RequestBody PostUpdateDto updateDto) {
         postService.update(no, updateDto);
-        return "redirect:/posts/" + no;
+        PostResponseDto updated = postService.findByIdWithoutIncrease(no);
+        return ResponseEntity.ok(updated);
     }
 
-    @GetMapping("/posts/{no}/delete")
-    public String deletePost(@PathVariable("no") Long no) {
+    @DeleteMapping("/{no}")
+    public ResponseEntity<Void> deletePost(@PathVariable("no") Long no) {
         postService.delete(no);
-        return "redirect:/posts";
+        return ResponseEntity.noContent().build();
+    }
+
+    public record PostPageResponse(
+            List<PostListDto> items,
+            int page,
+            int size,
+            int totalPages) {
     }
 }

@@ -46,8 +46,17 @@ public class PostService {
         return PostResponseDto.from(refreshed, tags);
     }
 
+    public PostResponseDto findByIdWithoutIncrease(Long id) {
+        Post post = postRepository.findById(id).orElse(null);
+        if (post == null) {
+            return null;
+        }
+        String tags = joinTags(postTagRepository.findByPostNo(id));
+        return PostResponseDto.from(post, tags);
+    }
+
     @Transactional
-    public void create(PostCreateDto createDto) {
+    public Long create(PostCreateDto createDto) {
         Post post = createDto.toEntity();
         post.setCreatedAt(LocalDateTime.now());
         post.setUpdatedAt(null);
@@ -55,6 +64,7 @@ public class PostService {
         postRepository.save(post);
 
         saveTags(post.getNo(), createDto.tags());
+        return post.getNo();
     }
 
     @Transactional
