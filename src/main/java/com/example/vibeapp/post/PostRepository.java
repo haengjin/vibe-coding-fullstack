@@ -12,15 +12,15 @@ public class PostRepository {
         return new ArrayList<>(posts);
     }
 
-    public java.util.Optional<Post> findByNo(Long no) {
-        return posts.stream().filter(p -> p.getNo().equals(no)).findFirst();
+    public java.util.Optional<Post> findById(Long id) {
+        return posts.stream().filter(p -> p.getNo().equals(id)).findFirst();
     }
 
     public void save(Post post) {
         posts.add(post);
     }
 
-    public void deleteByNo(Long no) {
-        posts.removeIf(p -> p.getNo().equals(no));
+    public void deleteById(Long id) {
+        posts.removeIf(p -> p.getNo().equals(id));
     }
 }

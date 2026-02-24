@@ -31,14 +31,14 @@ public class PostService {
         }
     }
 
-    public List<Post> getAllPosts() {
+    private List<Post> findAll() {
         return postRepository.findAll().stream()
                 .sorted(Comparator.comparing(Post::getNo).reversed())
                 .collect(Collectors.toList());
     }
 
-    public List<Post> getPostsByPage(int page, int size) {
-        List<Post> allPosts = getAllPosts();
+    public List<Post> findPagedPosts(int page, int size) {
+        List<Post> allPosts = findAll();
         int start = (page - 1) * size;
         int end = Math.min(start + size, allPosts.size());
 
@@ -53,15 +53,15 @@ public class PostService {
         return (int) Math.ceil((double) totalPosts / size);
     }
 
-    public Post getPostByNo(Long no) {
-        Post post = postRepository.findByNo(no).orElse(null);
+    public Post findById(Long id) {
+        Post post = postRepository.findById(id).orElse(null);
         if (post != null) {
             post.setViews(post.getViews() + 1);
         }
         return post;
     }
 
-    public void addPost(String title, String content) {
+    public void create(String title, String content) {
         Post post = new Post();
         post.setNo(nextNo++);
         post.setTitle(title);
@@ -72,8 +72,8 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void updatePost(Long no, String title, String content) {
-        Post post = postRepository.findByNo(no).orElse(null);
+    public void update(Long id, String title, String content) {
+        Post post = postRepository.findById(id).orElse(null);
         if (post != null) {
             post.setTitle(title);
             post.setContent(content);
@@ -81,7 +81,7 @@ public class PostService {
         }
     }
 
-    public void deletePost(Long no) {
-        postRepository.deleteByNo(no);
+    public void delete(Long id) {
+        postRepository.deleteById(id);
     }
 }

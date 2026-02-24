@@ -19,7 +19,7 @@ public class PostController {
     @GetMapping("/posts")
     public String listPosts(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
         int pageSize = 5;
-        List<Post> posts = postService.getPostsByPage(page, pageSize);
+        List<Post> posts = postService.findPagedPosts(page, pageSize);
         int totalPages = postService.getTotalPages(pageSize);
 
         model.addAttribute("posts", posts);
@@ -35,7 +35,7 @@ public class PostController {
 
     @GetMapping("/posts/{no}")
     public String getPostDetail(@PathVariable("no") Long no, Model model) {
-        Post post = postService.getPostByNo(no);
+        Post post = postService.findById(no);
         if (post == null) {
             return "redirect:/posts";
         }
@@ -45,7 +45,7 @@ public class PostController {
 
     @GetMapping("/posts/{no}/edit")
     public String editPostForm(@PathVariable("no") Long no, Model model) {
-        Post post = postService.getPostByNo(no);
+        Post post = postService.findById(no);
         if (post == null) {
             return "redirect:/posts";
         }
@@ -55,20 +55,20 @@ public class PostController {
 
     @PostMapping("/posts/add")
     public String addPost(@RequestParam("title") String title, @RequestParam("content") String content) {
-        postService.addPost(title, content);
+        postService.create(title, content);
         return "redirect:/posts";
     }
 
     @PostMapping("/posts/{no}/save")
     public String savePost(@PathVariable("no") Long no, @RequestParam("title") String title,
             @RequestParam("content") String content) {
-        postService.updatePost(no, title, content);
+        postService.update(no, title, content);
         return "redirect:/posts/" + no;
     }
 
     @GetMapping("/posts/{no}/delete")
     public String deletePost(@PathVariable("no") Long no) {
-        postService.deletePost(no);
+        postService.delete(no);
         return "redirect:/posts";
     }
 }
