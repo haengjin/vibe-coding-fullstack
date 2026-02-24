@@ -1,58 +1,114 @@
 # 프로젝트 명세서: vibeapp
 
-이 문서는 기능을 갖춘 스프링부트 애플리케이션인 **vibeapp**의 기술 사양과 구조를 정의합니다.
+이 문서는 현재 `vibeapp` 프로젝트의 구현 상태를 기준으로 기술 스펙과 기능 범위를 정리합니다.
 
 ## 1. 프로젝트 개요
-- **목표**: 게시판 기능을 포함한 표준 스프링부트 웹 애플리케이션 구현
-- **프로젝트 구조**: 기능형(Feature-based) 패키지 구조
-- **설정 형식**: YAML (`application.yml`)
+- 목표: 게시글 CRUD 및 태그 관리 기능을 제공하는 Spring Boot 웹 애플리케이션 구현
+- 아키텍처: 기능(Feature) 중심 패키지 구조
+- 뷰 렌더링: Thymeleaf 기반 서버사이드 렌더링
+- 설정 파일: `application.yml` (YAML)
 
-## 2. 환경 및 도구
-| 구성 요소 | 요구 사양 |
+## 2. 개발 환경 및 도구
+| 항목 | 사양 |
 | :--- | :--- |
-| **JDK** | JDK 25 이상 |
-| **언어** | Java |
-| **스프링 부트** | 4.0.1 이상 |
-| **빌드 도구** | Gradle 9.3.0 이상 |
-| **빌드 스크립트** | Groovy DSL |
+| JDK | Java 25 |
+| Framework | Spring Boot 4.0.1 |
+| Build Tool | Gradle |
+| Build Script | Groovy DSL |
+| DB | H2 Database (File Mode) |
+| Persistence | MyBatis |
 
-## 3. 프로젝트 구조 (기능형)
+## 3. 프로젝트 구조
 
-### Java 패키지 구조
-`src/main/java`
-- `com.example.vibeapp`
-    - `VibeApp.java`: 애플리케이션 실행 메인 클래스
-    - `home/`: 홈/인덱스 관련 도메인
-        - `HomeController.java`
-    - `post/`: 게시글 관련 도메인
-        - `Post.java` (Entity)
-        - `PostController.java`
-        - `PostService.java`
-        - `PostRepository.java` (Collection 기반 메모리 저장소)
+### 3.1 Java 패키지
+`src/main/java/com/example/vibeapp`
+- `VibeApp.java`
+  - Spring Boot 애플리케이션 진입점
+  - 트랜잭션 관리 활성화(`@EnableTransactionManagement`)
+- `home/`
+  - `HomeController.java`
+- `post/`
+  - `Post.java` (게시글 엔티티)
+  - `PostTag.java` (게시글 태그 엔티티)
+  - `PostController.java`
+  - `PostService.java`
+  - `PostRepository.java` (MyBatis Mapper 인터페이스)
+  - `PostTagRepository.java` (MyBatis Mapper 인터페이스)
+  - `dto/`
+    - `PostCreateDto.java`
+    - `PostUpdateDto.java`
+    - `PostListDto.java`
+    - `PostResponseDto.java`
 
-### 뷰 템플릿 구조
-`src/main/resources/templates`
-- `home/`: 홈 관련 템플릿 (`home.html`)
-- `post/`: 게시글 관련 템플릿 (`posts.html`, `post_detail.html`, `post_new_form.html`, `post_edit_form.html`)
+### 3.2 리소스 구조
+`src/main/resources`
+- `application.yml`
+- `schema.sql`
+- `data.sql` (파일은 유지, 자동 초기화는 비활성화)
+- `mapper/post/`
+  - `PostMapper.xml`
+  - `PostTagMapper.xml`
+- `templates/`
+  - `home/home.html`
+  - `post/posts.html`
+  - `post/post_detail.html`
+  - `post/post_new_form.html`
+  - `post/post_edit_form.html`
 
-## 4. 주요 기능
-- **게시글 목록 조회**: 최신순 정렬 및 페이지당 5개씩 페이징 처리
-- **게시글 상세 조회**: 게시글 내용 확인 및 조회수 자동 증가 기능
-- **게시글 등록**: 새 게시글 작성 및 저장
-- **게시글 수정**: 기존 게시글 제목/내용 수정 및 수정일 자동 반영
-- **게시글 삭제**: 게시글 삭제 처리 및 목록 리다이렉트
-- **기타**: 디자인 시스템 적용 및 반응형 UI (Thymeleaf + CSS)
+## 4. 데이터베이스 설계
 
-## 5. 의존성 및 플러그인
-### 플러그인
-- `org.springframework.boot`
-- `io.spring.dependency-management`
-- `java`
+### 4.1 POSTS
+- `NO` (PK, 자동 증가)
+- `TITLE` (VARCHAR(200), NOT NULL)
+- `CONTENT` (CLOB, NOT NULL, 최대 10MB 체크 제약)
+- `CREATED_AT` (TIMESTAMP, 기본값 CURRENT_TIMESTAMP)
+- `UPDATED_AT` (TIMESTAMP, 기본값 NULL)
+- `VIEWS` (INT, 기본값 0)
 
-### 의존성
-- `spring-boot-starter-web`: 웹 기능 활성화 및 내장 톰캣 포함
-- `spring-boot-starter-thymeleaf`: Thymeleaf 뷰 엔진
+### 4.2 POST_TAGS
+- `ID` (PK, 자동 증가)
+- `POST_NO` (FK, `POSTS.NO` 참조, NOT NULL)
+- `TAG_NAME` (VARCHAR(50), NOT NULL)
 
-## 6. 설정 방식
-애플리케이션 설정은 YAML 파일을 사용합니다.
-- 파일 위치: `src/main/resources/application.yml`
+## 5. 설정 현황
+
+### 5.1 DataSource / H2
+- URL: `jdbc:h2:file:./data/testdb`
+- H2 Console 활성화: `/h2-console`
+- H2 콘솔 서블릿 직접 등록(`H2ConsoleConfig`)
+
+### 5.2 MyBatis
+- Mapper XML 위치: `classpath:mapper/**/*.xml`
+- Type Alias 패키지: `com.example.vibeapp.post`
+- Camel Case 매핑: 활성화
+
+### 5.3 SQL 초기화
+- `spring.sql.init.mode=always`
+- `schema.sql` 실행: 활성화
+- `data.sql` 자동 실행: 비활성화(파일은 유지)
+
+### 5.4 로깅/디버그
+- `debug: true`
+- `org.springframework.boot.autoconfigure: DEBUG`
+- 로그 파일: `./logs/app.log`
+
+## 6. 주요 기능
+- 게시글 목록 조회(페이징)
+- 게시글 상세 조회(조회수 증가)
+- 게시글 등록/수정/삭제
+- 태그 입력(쉼표 구분) 및 저장
+- 게시글 수정 시 태그 재설정(기존 태그 삭제 후 재등록)
+- 게시글 상세 페이지에서 제목 아래 태그 표시
+
+## 7. 트랜잭션 정책
+- 트랜잭션 관리 활성화: `@EnableTransactionManagement`
+- `PostService#create(...)`: 게시글 등록 + 태그 등록을 단일 트랜잭션으로 처리
+- `PostService#update(...)`: 게시글 수정 + 태그 수정(삭제/재등록)을 단일 트랜잭션으로 처리
+
+## 8. UI/템플릿 정책
+- `posts.html`의 상단 고정 메뉴/푸터 레이아웃을 기준으로
+  - `post_new_form.html`
+  - `post_edit_form.html`
+  - `post_detail.html`
+  에 동일한 네비게이션/푸터를 유지
+- 페이지별 변경 영역은 `main` 콘텐츠 영역으로 한정
