@@ -1,23 +1,39 @@
 package com.example.vibeapp;
 
-import org.h2.server.web.JakartaWebServlet;
+import jakarta.servlet.Servlet;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * H2 Console 서블릿 수동 등록
- * Spring Boot 4.x에서는 H2ConsoleAutoConfiguration이 동작하지 않을 수 있어
- * JakartaWebServlet을 직접 등록한다.
- */
 @Configuration
 public class H2ConsoleConfig {
 
     @Bean
-    public ServletRegistrationBean<JakartaWebServlet> h2ConsoleServlet() {
-        ServletRegistrationBean<JakartaWebServlet> registration = new ServletRegistrationBean<>(new JakartaWebServlet(),
-                "/h2-console/*");
+    public ServletRegistrationBean<Servlet> h2ConsoleServlet() {
+        Servlet servlet = createH2Servlet();
+        ServletRegistrationBean<Servlet> registration = new ServletRegistrationBean<>(servlet, "/h2-console/*");
         registration.addInitParameter("webAllowOthers", "true");
         return registration;
+    }
+
+    private Servlet createH2Servlet() {
+        String[] candidates = {
+                "org.h2.server.web.JakartaWebServlet",
+                "org.h2.server.web.WebServlet"
+        };
+
+        for (String className : candidates) {
+            try {
+                Class<?> clazz = Class.forName(className);
+                Object instance = clazz.getDeclaredConstructor().newInstance();
+                if (instance instanceof Servlet servlet) {
+                    return servlet;
+                }
+            } catch (ReflectiveOperationException ignored) {
+                // Try next candidate.
+            }
+        }
+
+        throw new IllegalStateException("H2 console servlet class not found on runtime classpath.");
     }
 }

@@ -1,26 +1,25 @@
 package com.example.vibeapp.post;
 
-import org.springframework.stereotype.Repository;
-import java.util.ArrayList;
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-@Repository
-public class PostRepository {
-    private final List<Post> posts = new ArrayList<>();
+@Mapper
+public interface PostRepository {
 
-    public List<Post> findAll() {
-        return new ArrayList<>(posts);
-    }
+    List<Post> findAll();
 
-    public java.util.Optional<Post> findById(Long id) {
-        return posts.stream().filter(p -> p.getNo().equals(id)).findFirst();
-    }
+    List<Post> findPaged(@Param("offset") int offset, @Param("size") int size);
 
-    public void save(Post post) {
-        posts.add(post);
-    }
+    Long countAll();
 
-    public void deleteById(Long id) {
-        posts.removeIf(p -> p.getNo().equals(id));
-    }
+    Post findById(@Param("id") Long id);
+
+    int increaseViews(@Param("id") Long id);
+
+    int save(Post post);
+
+    int update(Post post);
+
+    int deleteById(@Param("id") Long id);
 }
